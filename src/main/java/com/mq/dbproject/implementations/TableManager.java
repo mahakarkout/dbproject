@@ -2,6 +2,9 @@ package com.mq.dbproject.implementations;
 
 import com.mq.dbproject.interfaces.ITable;
 import com.mq.dbproject.interfaces.ITableManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,11 +21,11 @@ public class TableManager implements ITableManager {
         tables = new HashMap<>();
         loadExistingTables(); // Load existing tables from disk
     }
-
+    private static final Logger logger = LoggerFactory.getLogger(TableManager.class);
     @Override
     public void createTable(String tableName, List<String> cols) {
         if (tables.containsKey(tableName)) {
-            System.out.println("Table " + tableName + " already exists.");
+            logger.warn("Table " + tableName + " already exists.");
             return;
         }
         ITable newTable = new Table(tableName, cols); //we create using Table implementation but store as ITable
@@ -32,7 +35,7 @@ public class TableManager implements ITableManager {
         newTable.displayTable(); 
         ((Table)newTable).saveToFile(); 
         
-        System.out.println("Table " + tableName + " created with columns: " + cols);
+        logger.info("Table " + tableName + " created with columns: " + cols);
     }
 
     @Override
@@ -43,9 +46,9 @@ public class TableManager implements ITableManager {
             if (tableFile.exists()) {
                 tableFile.delete(); // Delete the file when dropping the table
             }
-            System.out.println("Table " + tableName + " dropped.");
+            logger.info("Table " + tableName + " dropped.");
         } else {
-            System.out.println("Table " + tableName + " does not exist.");
+            logger.info("Table " + tableName + " does not exist.");
         }
     }
 
@@ -70,11 +73,11 @@ public class TableManager implements ITableManager {
                     String tableName = tableFile.getName().replace(".txt", "");
                     ITable table = new Table(tableName, List.of("id", "name", "email"));
                     tables.put(tableName, table);
-                    System.out.println("Loaded table: " + tableName);
+                    logger.info("Loaded table: " + tableName);
                 }
             }
         } else {
-            System.out.println("No existing tables found.");
+            logger.warn("No existing tables found.");
         }
     }
 }

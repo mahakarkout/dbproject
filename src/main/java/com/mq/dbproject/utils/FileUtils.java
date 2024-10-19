@@ -4,9 +4,12 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class FileUtils {
-
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
     // Save a table (map of rows) to a file
     public static void saveTableToFile(Map<String, Map<String, String>> rows, String fileName) {
         File directory = new File("db_data");
@@ -23,7 +26,7 @@ public class FileUtils {
                     String line = entry.getKey() + " : " + entry.getValue().toString().replaceAll(", ", ",").replaceAll("[{}]", "");
                     writer.write(line);
                     writer.newLine();
-                    System.out.println("Writing to file: " + line); // Log what is being written
+                    logger.info("Writing to file: " + line); // Log what is being written
                 }
             }
         } catch (IOException e) {
@@ -37,13 +40,13 @@ public class FileUtils {
     public static void loadTableFromFile(Map<String, Map<String, String>> rows, String fileName) {
         File directory = new File("db_data");
         if (!directory.exists()) {
-            System.out.println("No existing database directory found, creating new one.");
+            logger.info("No existing database directory found, creating new one.");
             directory.mkdir(); // Create db_data directory if it doesn't exist
         }
 
         File file = new File("db_data/" + fileName);
         if (!file.exists()) {
-            System.out.println("No existing table file found for " + fileName);
+            logger.warn("No existing table file found for " + fileName);
             return;
         }
 

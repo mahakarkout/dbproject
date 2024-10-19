@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+
+
 
 public class Table implements ITable {
     private String tableName;
@@ -20,17 +25,17 @@ public class Table implements ITable {
         this.rows = new HashMap<>();
         loadFromFile();
     }
-
+    private static final Logger logger = LoggerFactory.getLogger(Table.class);
     @Override
     public void insert(Map<String, String> row) {
         String primaryKey = row.get("id");
         if (primaryKey == null) {
-            System.out.println("Primary key 'id' is required.");
+            logger.warn("Primary key 'id' is required.");
             return;
         }
 
         if (!validateRow(row)) {
-            System.out.println("Invalid row. The row must contain all columns specified: " + cols);
+            logger.warn("Invalid row. The row must contain all columns specified: " + cols);
             return;
         }
 
@@ -47,13 +52,13 @@ public class Table implements ITable {
     public void update(String key, Map<String, String> newRow) {
         if (rows.containsKey(key)) {
             if (!validateRow(newRow)) {
-                System.out.println("Invalid row. The row must contain all columns specified : " + cols);
+                logger.warn("Invalid row. The row must contain all columns specified : " + cols);
                 return;
             }
             rows.put(key, newRow);
             saveToFile();
         } else {
-            System.out.println("Row not found for key: " + key);
+            logger.warn("Row not found for key: " + key);
         }
     }
 
@@ -62,20 +67,20 @@ public class Table implements ITable {
         if (rows.containsKey(key)) {
             rows.remove(key);
             saveToFile();
-            System.out.println("Row with key '" + key + "' has been successfully deleted.");
+            logger.info("Row with key '" + key + "' has been successfully deleted.");
             return true; // Return true if the deletion was successful
         } else {
-            System.out.println("Error: Row with key '" + key + "' does not exist.");
+            logger.error("Error: Row with key '" + key + "' does not exist.");
             return false; // Return false if the key was not found
         }
     }
 
     @Override
     public void displayTable() {
-        System.out.println("Table: " + tableName);
-        System.out.println("Columns: " + cols);
+        logger.info("Table: " + tableName);
+        logger.info("Columns: " + cols);
         for (Map.Entry<String, Map<String, String>> entry : rows.entrySet()) {
-            System.out.println("Key: " + entry.getKey() + ", Row: " + entry.getValue());
+            logger.info("Key: " + entry.getKey() + ", Row: " + entry.getValue());
         }
     }
 
@@ -93,9 +98,9 @@ public class Table implements ITable {
     }
 
     public void saveToFile() {
-        System.out.println("Attempting to save table '" + tableName + "' to disk...");
+        logger.info("Attempting to save table '" + tableName + "' to disk...");
         FileUtils.saveTableToFile(rows, tableName + ".txt");
-        System.out.println("Save operation completed for table '" + tableName + "'.");
+        logger.info("Save operation completed for table '" + tableName + "'.");
     }
 
 
