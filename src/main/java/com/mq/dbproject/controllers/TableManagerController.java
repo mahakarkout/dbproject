@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tables")
+@RequestMapping("/api/TableManager")
 public class TableManagerController {
 
     private final ITableManager tableManager;
@@ -36,14 +36,5 @@ public class TableManagerController {
         List<String> tables = tableManager.listTables(); 
         return ResponseEntity.ok(tables);
     }
-    
 
-    @GetMapping("/{tableName}")
-    public ResponseEntity<ITable> getTable(@PathVariable String tableName) {
-        ITable table = tableManager.getTable(tableName);
-        if (table == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(table);
-    }
 }

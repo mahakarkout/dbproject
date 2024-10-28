@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tables/{tableName}")
+@RequestMapping("/api/Table/{tableName}")
 public class TableController {
 
     private final ITableManager tableManager;
