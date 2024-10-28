@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,4 +63,27 @@ public class TableController {
         table.displayTable();
         return ResponseEntity.ok("Table displayed in console.");
     }
+
+    @GetMapping("/select/{key}")
+    public ResponseEntity<Map<String, String>> selectRow(@PathVariable String tableName, @PathVariable String key) {
+        ITable table = tableManager.getTable(tableName);
+        if (table == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Map<String, String> row = table.select(key);
+        if (row == null) {
+            return ResponseEntity.status(404).body(null); // Row not found
+        }
+        return ResponseEntity.ok(row);
+    }
+
+    @GetMapping("/selectByName")
+    public ResponseEntity<List<Map<String, String>>> selectByName(@PathVariable String tableName, @RequestParam String name) {
+        List<Map<String, String>> rows = tableManager.selectByName(tableName, name);
+        if (rows.isEmpty()) {
+            return ResponseEntity.status(404).body(null); // No rows found
+        }
+        return ResponseEntity.ok(rows);
+    }
 }
+

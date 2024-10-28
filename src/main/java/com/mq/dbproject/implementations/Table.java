@@ -3,15 +3,13 @@ package com.mq.dbproject.implementations;
 import com.mq.dbproject.interfaces.ITable;
 import com.mq.dbproject.utils.FileUtils;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-
-
 
 
 public class Table implements ITable {
@@ -47,6 +45,20 @@ public class Table implements ITable {
     public Map<String, String> select(String key) {
         return rows.get(key);
     }
+
+
+    @Override
+    public List<Map<String, String>> selectByName(String partialName) {
+        List<Map<String, String>> matchingRows = new ArrayList<>();
+        for (Map<String, String> row : rows.values()) {
+            String name = row.get("name");
+            if (name != null && name.contains(partialName)) {
+                matchingRows.add(row);
+            }
+        }
+        return matchingRows;
+    }
+
 
     @Override
     public void update(String key, Map<String, String> newRow) {

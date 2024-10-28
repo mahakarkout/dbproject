@@ -1,0 +1,14 @@
+com\mq\dbproject\interfaces\IQueryParser.class
+com\mq\dbproject\utils\FileUtils.class
+com\mq\dbproject\App.class
+com\mq\dbproject\interfaces\ISqlDatabase.class
+com\mq\dbproject\controllers\TableManagerController.class
+com\mq\dbproject\HelloController$Result.class
+com\mq\dbproject\HelloController.class
+com\mq\dbproject\interfaces\ITable.class
+com\mq\dbproject\interfaces\ITableManager.class
+com\mq\dbproject\controllers\TableController.class
+com\mq\dbproject\implementations\QueryParser.class
+com\mq\dbproject\implementations\Table.class
+com\mq\dbproject\implementations\TableManager.class
+com\mq\dbproject\AppConfig.class
