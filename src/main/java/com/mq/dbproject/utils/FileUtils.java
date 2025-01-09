@@ -9,6 +9,20 @@ import org.slf4j.LoggerFactory;
 
 
 public class FileUtils {
+    public static String getShardNumber(String tableName) {
+        char firstLetter = Character.toUpperCase(tableName.charAt(0)); // Get the first letter (case-insensitive)
+
+        if (firstLetter >= 'A' && firstLetter <= 'E') {
+            return "db_data/shardAtoE/"; // (shardAtoE)
+        } else if (firstLetter >= 'F' && firstLetter <= 'M') {
+            return "db_data/shardFtoM/"; // (shardFtoM)
+        } else if (firstLetter >= 'N' && firstLetter <= 'Z') {
+            return "db_data/shardNtoZ/"; // (shardNtoZ)
+        } else {
+            throw new IllegalArgumentException("Invalid table name: " + tableName);
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
     // Save a table (map of rows) to a file
     public static void saveTableToFile(Map<String, Map<String, String>> rows, String fileName) {
@@ -16,8 +30,9 @@ public class FileUtils {
         if (!directory.exists()) {
             directory.mkdir(); // Create db_data directory if it doesn't exist
         }
-    
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("db_data/" + fileName))) {
+        String shardFolder = getShardNumber(fileName);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter( shardFolder+ fileName))) {
             if (rows.isEmpty()) {
                 writer.write("# This is an empty table: " + fileName.replace(".txt", ""));
                 writer.newLine();
@@ -43,8 +58,8 @@ public class FileUtils {
             logger.info("No existing database directory found, creating new one.");
             directory.mkdir(); // Create db_data directory if it doesn't exist
         }
-
-        File file = new File("db_data/" + fileName);
+        String shardFolder = getShardNumber(fileName);
+        File file = new File(shardFolder + fileName);
         if (!file.exists()) {
             logger.warn("No existing table file found for " + fileName);
             return;
