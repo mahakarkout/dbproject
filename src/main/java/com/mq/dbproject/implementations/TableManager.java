@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.mq.dbproject.utils.FileUtils.getShardNumber;
+
 @Service
 public class TableManager implements ITableManager {
     private Map<String, ITable> tables;
@@ -42,7 +44,8 @@ public class TableManager implements ITableManager {
     public void dropTable(String tableName) {
         if (tables.containsKey(tableName)) {
             tables.remove(tableName);
-            File tableFile = new File("db_data/" + tableName + ".txt");
+            String shardFolder = getShardNumber(tableName);
+            File tableFile = new File(shardFolder + tableName + ".txt");
             if (tableFile.exists()) {
                 tableFile.delete(); // Delete the file when dropping the table
             }
@@ -64,20 +67,42 @@ public class TableManager implements ITableManager {
     }
 
     // Load existing tables from the disk
+
     private void loadExistingTables() {
         File dbDirectory = new File("db_data");
         if (dbDirectory.exists() && dbDirectory.isDirectory()) {
-            File[] tableFiles = dbDirectory.listFiles((dir, name) -> name.endsWith(".txt"));
-            if (tableFiles != null) {
+            // Recursively list all `.txt` files in shard folders
+            List<File> tableFiles = getAllTableFiles(dbDirectory);
+            if (!tableFiles.isEmpty()) {
                 for (File tableFile : tableFiles) {
                     String tableName = tableFile.getName().replace(".txt", "");
-                    ITable table = new Table(tableName, List.of("id", "name", "email"));
+                    ITable table = new Table(tableName, List.of("id", "name", "email")); // Example columns
                     tables.put(tableName, table);
                     logger.info("Loaded table: " + tableName);
                 }
+            } else {
+                logger.warn("No existing tables found.");
             }
         } else {
-            logger.warn("No existing tables found.");
+            logger.warn("Database directory does not exist or is not a directory.");
         }
+    }
+
+    // Helper method to get all `.txt` files from subdirectories
+    private List<File> getAllTableFiles(File directory) {
+        List<File> tableFiles = new ArrayList<>();
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    // Recursive call for subdirectories
+                    tableFiles.addAll(getAllTableFiles(file));
+                } else if (file.isFile() && file.getName().endsWith(".txt")) {
+                    // Add .txt files to the list
+                    tableFiles.add(file);
+                }
+            }
+        }
+        return tableFiles;
     }
 }
