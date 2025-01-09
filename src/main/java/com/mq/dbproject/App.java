@@ -15,6 +15,7 @@ public class App {
         String sourceDir = "db_data";
         String targetDir = "F:\\dbprojectSecondInstance\\db_data";
 
+        //new instance
         ReplicationProcess replicationProcess = new ReplicationProcess();
 
         // Start watching the directory and trigger replication on changes
