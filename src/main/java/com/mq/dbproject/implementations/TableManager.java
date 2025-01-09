@@ -66,6 +66,18 @@ public class TableManager implements ITableManager {
         return tableNames;
     }
 
+    @Override
+    public List<Map<String, String>> selectByName(String tableName, String nameString) {
+        ITable table = tables.get(tableName);
+        if (table != null) {
+            return table.selectByName(nameString);
+        }
+        return new ArrayList<>();
+    }
+    
+
+
+
     // Load existing tables from the disk
 
     private void loadExistingTables() {

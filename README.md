@@ -13,7 +13,7 @@ The database supports basic operations such as inserting, updating, selecting, a
   - Insert rows into tables.
   - Update existing rows.
   - Delete rows from tables.
-  - Select and display rows from tables.
+  - SelectByName or Id and display rows from tables.
 - **REST API Access**: A RESTful interface was created using Spring Boot, allowing for CRUD operations on the database through HTTP requests.
 -  Endpoints are available for creating tables, inserting rows, updating records, deleting rows, and listing tables, making the database accessible via REST API for remote interaction.
 
